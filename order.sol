@@ -22,7 +22,8 @@ contract service {
     event serviceOrderClosed(address provider, uint serviceId);
     event withdrawDone(address person, uint amount);
     
-    function createServiceOrder (uint serviceId, string calldata serviceName, address payable provider, address payable customer, uint price) external {
+    function createServiceOrder (uint serviceId, string calldata serviceName, address payable provider, 
+        address payable customer, uint price) external {
         require(bytes(serviceName).length != 0 && price != 0);
         serviceOrder = ServiceOrder({
             serviceId: serviceId,
@@ -35,9 +36,9 @@ contract service {
         emit serviceOrderCreated(provider, serviceName, serviceId, price);
     }
 
-    function sendAmount (address provider) external payable {
+    function requestService (address provider) external payable {
         ServiceOrder storage a = serviceOrder;
-        //require(msg.value == a.price && a.status == orderStatus.Created);
+        require(msg.value == a.price && a.status == orderStatus.Created);
         a.status = orderStatus.InProgress;
         emit amountRecieved(provider, a.serviceId);
     }
